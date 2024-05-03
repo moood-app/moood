@@ -35,6 +35,22 @@ services:
     ports:
       - "9002:8080"
 
+  persister:
+    profiles: [all, persister]
+    ports:
+      - "9000:8080"
+    build:
+      context: persister
+      target: dev
+      args:
+        - AWS_LAMBDA_RIE_VERSION=1.16
+    volumes:
+      - ./persister:/app
+      - ~/.aws:/root/.aws
+    working_dir: /app
+    environment:
+      - air_wd=/app
+
   bruno:
     profiles: [all, tests]
     image: bruno
