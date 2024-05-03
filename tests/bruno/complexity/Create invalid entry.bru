@@ -1,0 +1,23 @@
+meta {
+  name: Create invalid entry
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://{{url_complexity}}:{{port_complexity}}/2015-03-31/functions/function/invocations
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 200
+  res.body.errorMessage: eq Validation of payload failed: 'id' is a required property, 'entry' is a required property
+  res.body.errorType: eq ValueError
+  res.body.requestId: isDefined
+  res.body.stackTrace: isDefined
+}

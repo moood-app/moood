@@ -1,0 +1,25 @@
+meta {
+  name: Create valid entry
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://{{url_asent}}:{{port_asent}}/2015-03-31/functions/function/invocations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "id": "fd07ddeb-ce85-43a3-b24c-d0429401cc25",
+      "entry": "The weather this week has been quite unpredictable. Yesterday, the sun was shining brightly, making it a perfect day for outdoor activities. However, today it's been raining non-stop, causing some inconvenience for those who had planned outdoor events. On the bright side, the rain is beneficial for the crops and gardens, helping them grow healthier. Overall, it's a mixed bag of weather conditions, with both good and not-so-good aspects to consider."
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.positive: eq 0.16578620128695812
+  res.body.negative: eq 0.03805668016194332
+  res.body.neutral: eq 0.5961571185510985
+}

@@ -1,0 +1,46 @@
+version: '3.7'
+name: moood
+services:
+  cdk:
+    build: ./aws
+    profiles: [devops]
+    volumes:
+      - .:/moood
+      - ~/.aws:/root/.aws
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /moood/aws
+    environment:
+      AWS_PROFILE: moood
+      VERSION: 0.1.3-prealpha
+
+  asent:
+    profiles: [all, worker]
+    build:
+      context: ./workers/asent
+      target: production
+    # volumes:
+    #   - ./workers/asent:/app
+    working_dir: /app
+    ports:
+      - "9001:8080"
+
+  complexity:
+    profiles: [all, worker]
+    build:
+      context: ./workers/complexity
+      target: production
+    # volumes:
+    #   - ./workers/asent:/app
+    working_dir: /app
+    ports:
+      - "9002:8080"
+
+  bruno:
+    profiles: [all, tests]
+    image: bruno
+    build:
+      context: tests/bruno
+      args:
+        - BRUNO_CLI_VERSION=1.11.0
+    volumes:
+      - ./tests/bruno:/tests
